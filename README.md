@@ -3,7 +3,7 @@
 **Team Members:**
 * **Junjie Chen** - [Fullstack]
 * **Meiqi Ma** - [Backend]
-* **Thao Nguyen** - [Role, TBD]
+* **Thao Nguyen** - [Frontend]
 * **Weiqian Xu** - [Role, TBD]
 
 ---
