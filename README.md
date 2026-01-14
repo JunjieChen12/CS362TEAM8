@@ -4,7 +4,7 @@
 * **Junjie Chen** - [Fullstack]
 * **Meiqi Ma** - [Backend]
 * **Thao Nguyen** - [Frontend]
-* **Weiqian Xu** - [Role, TBD]
+* **Weiqian Xu** - [Backend]
 
 ---
 
