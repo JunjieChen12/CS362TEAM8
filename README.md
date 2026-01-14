@@ -2,7 +2,7 @@
 
 **Team Members:**
 * **Junjie Chen** - [Role, TBD]
-* **Meiqi Ma** - [Role, TBD]
+* **Meiqi Ma** - [Backend]
 * **Thao Nguyen** - [Role, TBD]
 * **Weiqian Xu** - [Role, TBD]
 
