@@ -15,6 +15,20 @@
     <h1>Taskwise App</h1>
 
     <script src="{{ url_for('static', filename='index.js') }}"></script>
+
+    <form action="/add" method="POST">
+        <input type="text" name="name" placeholder="Task Name" required>
+        <input type="text" name="deadline" placeholder="Deadline">
+        <input type="number" name="duration" placeholder="Minutes">
+        <button type="submit">Add Task</button>
+    </form>
+
+    <ul>
+        {% for task in tasks %}
+        <li>{{ task.name }} - {{ task.deadline }}</li>
+        {% endfor %}
+    </ul>
+
 </body>
 
 </html>

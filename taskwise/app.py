@@ -50,7 +50,8 @@ def add_task():
     try:
         db.session.add(new_task)
         db.session.commit()
-        return redirect('/') # Go back to the homepage
+        # Go back to the homepage
+        return redirect('/')
     except:
         return 'There was an issue adding your task'
 
