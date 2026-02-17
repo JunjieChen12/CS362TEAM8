@@ -57,3 +57,31 @@ def add_task():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+#route to update task 
+@app.route('/update/<int:id>', methods=['POST'])
+def update_task(id):
+    task = Task.query.get_or_404(id)
+    try: 
+        task.name = request.form.get('name')
+        task.deadline = request.form.get('deadline')
+        task.duration = request.form.get('duration')
+
+        db.session.commit()
+        
+        return redirect('/')
+    except:
+        return "Something went wrong..."
+
+
+#Delete task
+@app.route('/delete/<int:id>')
+def delete_task(id): 
+    task_to_delete = Task.query.get_or_404(id)
+    try: 
+        db.session.delete(task_to_delete)
+        db.session.commit()
+        #return to home page 
+        return redirect('/')
+    except:
+        return 'Something went wrong when deleting the task'
