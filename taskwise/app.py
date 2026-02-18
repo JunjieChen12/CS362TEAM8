@@ -27,6 +27,7 @@ def index():
     tasks = Task.query.all()
     return render_template('index.html', tasks=tasks)
 
+# Add Task
 @app.route('/add', methods=['POST'])
 def add_task():
     task_name = request.form.get('name')
@@ -41,7 +42,8 @@ def add_task():
         return redirect('/')
     except:
         return 'There was an issue adding your task'
-    
+
+# Check Task
 @app.route('/toggle/<int:task_id>')
 def toggle_task(task_id):
     task = Task.query.get_or_404(task_id)
@@ -51,6 +53,31 @@ def toggle_task(task_id):
         return redirect('/')
     except:
         return 'There was an issue updating your task'
+
+# Edit Task
+@app.route('/edit/<int:task_id>', methods=['POST'])
+def edit_task(task_id):
+    task = Task.query.get_or_404(task_id)
+    task.name = request.form.get('name')
+    task.deadline = request.form.get('deadline')
+    task.duration = request.form.get('duration')
+
+    try:
+        db.session.commit()
+        return redirect('/')
+    except:
+        return 'There was an issue updating your task'
+
+# Delete Task  
+@app.route('/delete/<int:task_id>', methods=['POST'])
+def delete_task(task_id):
+    task = Task.query.get_or_404(task_id)
+    try:
+        db.session.delete(task)
+        db.session.commit()
+        return redirect('/')
+    except:
+        return 'There was an issue deleting your task'
 
 if __name__ == '__main__':
     # Automatically create the database file if it doesn't exist
