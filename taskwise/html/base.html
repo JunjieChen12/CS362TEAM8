@@ -1,1 +1,71 @@
-<!--skeleton layout (footer/navbar)-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard - Taskwise</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;600;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+</head>
+<body>
+
+  <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top border-bottom py-3">
+    <div class="container-fluid px-5">
+      <a class="navbar-brand logo fw-bold fs-3" href="/">TASKWISE</a>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav mx-auto">
+          <li class="nav-item"><a class="nav-link fw-bold" href="#">DASHBOARD</a></li>
+        </ul>
+        <div class="d-flex align-items-center gap-3">
+          <i class="bi bi-bell-fill fs-5"></i>
+          <div class="rounded-circle bg-primary opacity-50" style="width:35px;height:35px;"></div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container-fluid px-5 py-4">
+    {% block content %}{% endblock %}
+  </main>
+
+  <button class="btn btn-new-task shadow" data-bs-toggle="modal" data-bs-target="#newTaskModal">
+    <i class="bi bi-plus-lg me-2"></i>NEW TASK
+  </button>
+
+  <div class="modal fade" id="newTaskModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 rounded-4 shadow">
+        <form action="/add" method="POST">
+          <div class="modal-header border-0 pb-0">
+            <h5 class="fw-bold">Create New Task</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label class="form-label small fw-bold">Task Name</label>
+              <input type="text" class="form-control" name="name" placeholder="e.g., Study for AI midterm" required />
+            </div>
+            <div class="row g-3">
+              <div class="col-6">
+                <label class="form-label small fw-bold">Duration (min)</label>
+                <input type="number" class="form-control" name="duration">
+              </div>
+              <div class="col-6">
+                <label class="form-label small fw-bold">Deadline</label>
+                <input type="date" class="form-control" name="deadline">
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer border-0">
+            <button type="submit" class="btn btn-primary px-4">Create Task</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,1 +1,47 @@
-/*css here*/
+:root {
+    --bg-gray: #f0f2f5;
+}
+
+body {
+    font-family: 'DM Sans', sans-serif;
+    background-color: var(--bg-gray);
+    color: #333;
+}
+
+.logo {
+    font-family: 'Unbounded', sans-serif;
+    letter-spacing: 1px;
+}
+
+.navbar {
+    background-color: var(--bg-gray) 
+}
+
+.card {
+    border-radius: 12px;
+}
+
+.text-muted {
+    color: #6c757d 
+}
+
+.btn-new-task {
+    position: fixed;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--bg-gray);
+    border: none;
+    color: #4a5568;
+    font-weight: bold;
+    padding: 18px 50px;
+    border-radius: 50px;
+    box-shadow: 9px 9px 16px rgb(163,177,198,0.6), 
+               -9px -9px 16px rgba(255,255,255, 0.5);
+    z-index: 1000;
+}
+
+.btn-new-task:hover {
+    box-shadow: 4px 4px 8px rgb(163,177,198,0.6), 
+               -4px -4px 8px rgba(255,255,255, 0.5);
+}

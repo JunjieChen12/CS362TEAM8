@@ -1,27 +1,20 @@
-#main entry point of the application
-
 from flask import Flask, render_template, request, redirect
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime
 
-# Initialize App with your specific folder settings
+# Initialize App
 app = Flask(__name__, template_folder='html')
 
-# Database, creates taskwise.db in instance folder
+# Database configuration
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///taskwise.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-# Initialize the Database
 db = SQLAlchemy(app)
 
 # DATABASE MODEL 
-# This class defines the columns in your database table
 class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(200), nullable=False)
-    # Estimated minutes
     duration = db.Column(db.Integer, nullable=True)
-     # Keep as string to be simple and easy to read
     deadline = db.Column(db.String(50), nullable=True)
     is_completed = db.Column(db.Boolean, default=False)
 
@@ -31,29 +24,36 @@ class Task(db.Model):
 # ROUTES
 @app.route('/')
 def index():
-    # Query all tasks from the database to display them
     tasks = Task.query.all()
     return render_template('index.html', tasks=tasks)
 
-# Route to Add a New Task
 @app.route('/add', methods=['POST'])
 def add_task():
-    # Get data from the form
     task_name = request.form.get('name')
     task_deadline = request.form.get('deadline')
     task_duration = request.form.get('duration')
 
-    # Create a new Task object
     new_task = Task(name=task_name, deadline=task_deadline, duration=task_duration)
 
-    # Save to Database
     try:
         db.session.add(new_task)
         db.session.commit()
-        # Go back to the homepage
         return redirect('/')
     except:
         return 'There was an issue adding your task'
+    
+@app.route('/toggle/<int:task_id>')
+def toggle_task(task_id):
+    task = Task.query.get_or_404(task_id)
+    task.is_completed = not task.is_completed 
+    try:
+        db.session.commit()
+        return redirect('/')
+    except:
+        return 'There was an issue updating your task'
 
 if __name__ == '__main__':
+    # Automatically create the database file if it doesn't exist
+    with app.app_context():
+        db.create_all()
     app.run(debug=True)
