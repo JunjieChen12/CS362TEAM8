@@ -1,172 +1,20 @@
-const API_BASE_URL  = "http://localhost:5000/api";
-const USERS_KEY    = "taskwise_users";
-const LS_USER_KEY  = "taskwise_user";
-const LS_TOKEN_KEY = "taskwise_token";
+const TASKS_KEY = "taskwise_tasks_dashboard";
 
 // ==========================================
-// AUTH HELPERS
+// TASK PERSISTENCE
 // ==========================================
-
-function getUsers() {
-  const raw = localStorage.getItem(USERS_KEY);
-  return raw ? JSON.parse(raw) : [];
-}
-function saveUsers(users) { localStorage.setItem(USERS_KEY, JSON.stringify(users)); }
-
-function setSession(user) {
-  localStorage.setItem(LS_USER_KEY, JSON.stringify({ id: user.id, name: user.name, email: user.email }));
-  localStorage.setItem(LS_TOKEN_KEY, "mock_token_" + Date.now());
-}
-function getSessionUser() {
-  try {
-    const raw = localStorage.getItem(LS_USER_KEY);
-    return raw ? JSON.parse(raw) : null;
-  } catch { return null; }
-}
-function isLoggedIn() { return !!localStorage.getItem(LS_TOKEN_KEY); }
-
-// Page guard — call on every page
-function enforcePageGuards() {
-  const page = window.location.pathname.split("/").pop();
-  if ((page === "login.html" || page === "register.html") && isLoggedIn()) {
-    window.location.href = "dashboard.html";
-  }
-  if ((page === "dashboard.html" || page === "profile.html") && !isLoggedIn()) {
-    window.location.href = "login.html";
-  }
-  if (page === "" || page === "index.html") {
-    if (isLoggedIn()) window.location.href = "dashboard.html";
-  }
-}
-
-// ==========================================
-// REGISTER FORM
-// ==========================================
-
-function initRegister() {
-  const form = document.getElementById("registerForm");
-  if (!form) return;
-
-  form.addEventListener("submit", function (e) {
-    e.preventDefault();
-
-    const name            = document.getElementById("registerName").value.trim();
-    const email           = document.getElementById("registerEmail").value.trim().toLowerCase();
-    const password        = document.getElementById("registerPassword").value;
-    const confirmPassword = document.getElementById("confirmPassword").value;
-
-    if (!name || !email || !password || !confirmPassword) {
-      showAuthAlert("registerAlert", "registerAlertMessage", "Please fill in all fields.", "danger");
-      return;
-    }
-    if (password.length < 8) {
-      showAuthAlert("registerAlert", "registerAlertMessage", "Password must be at least 8 characters.", "danger");
-      return;
-    }
-    if (password !== confirmPassword) {
-      showAuthAlert("registerAlert", "registerAlertMessage", "Passwords do not match.", "danger");
-      return;
-    }
-
-    const users    = getUsers();
-    const existing = users.find(u => u.email === email);
-    if (existing) {
-      showAuthAlert("registerAlert", "registerAlertMessage", "Email already registered. Please log in.", "danger");
-      setTimeout(() => window.location.href = "login.html", 1500);
-      return;
-    }
-
-    const newUser = { id: Date.now(), name, email, password, createdAt: new Date().toISOString() };
-    users.push(newUser);
-    saveUsers(users);
-    setSession(newUser);
-    window.location.href = "dashboard.html";
-  });
-}
-
-// ==========================================
-// LOGIN FORM
-// ==========================================
-
-function initLogin() {
-  const form = document.getElementById("loginForm");
-  if (!form) return;
-
-  form.addEventListener("submit", function (e) {
-    e.preventDefault();
-
-    const email    = document.getElementById("loginEmail").value.trim().toLowerCase();
-    const password = document.getElementById("loginPassword").value;
-    const users    = getUsers();
-
-    if (users.length === 0) {
-      showAuthAlert("loginAlert", "loginAlertMessage", "No accounts found. Please register first.", "danger");
-      setTimeout(() => window.location.href = "register.html", 1500);
-      return;
-    }
-
-    const user = users.find(u => u.email === email);
-    if (!user) {
-      showAuthAlert("loginAlert", "loginAlertMessage", "Account not found. Please register.", "danger");
-      return;
-    }
-    if (user.password !== password) {
-      showAuthAlert("loginAlert", "loginAlertMessage", "Incorrect password. Try again.", "danger");
-      return;
-    }
-
-    setSession(user);
-    window.location.href = "dashboard.html";
-  });
-}
-
-function showAuthAlert(alertId, msgId, message, type) {
-  const alertEl = document.getElementById(alertId);
-  const msgEl   = document.getElementById(msgId);
-  if (!alertEl || !msgEl) return;
-  alertEl.className = `alert alert-${type}`;
-  msgEl.textContent = message;
-}
-
-// ==========================================
-// PASSWORD TOGGLE (used in login + register)
-// ==========================================
-
-function togglePassword(inputId) {
-  const input   = document.getElementById(inputId);
-  const iconId  = inputId + "Icon";
-  const icon    = document.getElementById(iconId);
-  if (!input) return;
-
-  if (input.type === "password") {
-    input.type  = "text";
-    if (icon) { icon.classList.remove("bi-eye"); icon.classList.add("bi-eye-slash"); }
-  } else {
-    input.type  = "password";
-    if (icon) { icon.classList.remove("bi-eye-slash"); icon.classList.add("bi-eye"); }
-  }
-}
-
-function googleLogin() { alert("Google login: coming soon!"); }
-
-// ==========================================
-// TASK PERSISTENCE (per user in localStorage)
-// ==========================================
-
-function getTasksKey() {
-  const user = getSessionUser();
-  return user ? `taskwise_tasks_${user.id}` : "taskwise_tasks_guest";
-}
 
 function loadTasksFromStorage() {
   try {
-    const raw = localStorage.getItem(getTasksKey());
+    const raw = localStorage.getItem(TASKS_KEY);
     return raw ? JSON.parse(raw) : [];
-  } catch { return []; }
+  } catch {
+    return [];
+  }
 }
 
 function saveTasksToStorage() {
-  localStorage.setItem(getTasksKey(), JSON.stringify(sampleTasks));
+  localStorage.setItem(TASKS_KEY, JSON.stringify(sampleTasks));
 }
 
 // ==========================================
@@ -198,9 +46,6 @@ function initDashboard() {
     });
   });
 
-  renderGreetingTime();
-  renderUserName();
-  updateCurrentDate();
   setMinDate();
   attachDashboardListeners();
   loadTasks();
@@ -224,34 +69,11 @@ function attachDashboardListeners() {
   const notificationBtn = document.getElementById("notificationBtn");
   if (notificationBtn) notificationBtn.addEventListener("click", () => alert("No new notifications."));
 
-  const profileBtn = document.getElementById("profileBtn");
-  if (profileBtn) profileBtn.addEventListener("click", () => window.location.href = "profile.html");
 }
 
 // ==========================================
-// DASHBOARD — DATE / GREETING
+// DASHBOARD — DATE HELPERS
 // ==========================================
-
-function renderGreetingTime() {
-  const el   = document.getElementById("greetingTime");
-  if (!el) return;
-  const hour = new Date().getHours();
-  el.textContent = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
-}
-
-function renderUserName() {
-  const user  = getSessionUser();
-  const el    = document.getElementById("userName");
-  if (!el) return;
-  const name  = user?.name || user?.username || [user?.firstName, user?.lastName].filter(Boolean).join(" ").trim();
-  el.textContent = name || "User";
-}
-
-function updateCurrentDate() {
-  const el = document.getElementById("currentDate");
-  if (!el) return;
-  el.textContent = new Date().toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
-}
 
 function setMinDate() {
   const today = new Date().toISOString().split("T")[0];
@@ -534,125 +356,6 @@ function formatDeadline(dateString) {
 }
 
 // ==========================================
-// PROFILE PAGE
-// ==========================================
-
-function initProfile() {
-  const user = getSessionUser();
-  if (!user) { window.location.href = "login.html"; return; }
-
-  loadUserProfile(user);
-  setupProfileTabs();
-  setupProfileForms();
-}
-
-function loadUserProfile(user) {
-  const nameParts = (user.name || "").split(" ");
-  const set = (id, val) => { const el = document.getElementById(id); if (el) el.value = val; };
-  set("firstName",    nameParts[0] || "");
-  set("lastName",     nameParts.slice(1).join(" ") || "");
-  set("profileEmail", user.email || "");
-
-  const img = document.getElementById("profileImage");
-  if (img) img.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&size=150&background=5a8c7b&color=fff`;
-
-  // Compute real stats from stored tasks
-  const tasks     = loadTasksFromStorage();
-  const completed = tasks.filter(t => t.is_completed);
-  const active    = tasks.filter(t => !t.is_completed);
-  const rate      = tasks.length > 0 ? Math.round((completed.length / tasks.length) * 100) : 0;
-
-  // Calculate days since account creation (stored on user object)
-  const created   = user.createdAt ? new Date(user.createdAt) : new Date();
-  const daysActive = Math.max(1, Math.ceil((Date.now() - new Date(created)) / 86400000));
-
-  const setText = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
-  setText("statCompleted",  completed.length);
-  setText("statActive",     active.length);
-  setText("statRate",       tasks.length > 0 ? `${rate}%` : "—");
-  setText("statDays",       daysActive);
-}
-
-function setupProfileTabs() {
-  document.querySelectorAll(".list-group-item[data-tab]").forEach(link => {
-    link.addEventListener("click", function (e) {
-      e.preventDefault();
-      document.querySelectorAll(".list-group-item[data-tab]").forEach(l => l.classList.remove("active"));
-      document.querySelectorAll(".tab-content").forEach(t => t.classList.remove("active"));
-      this.classList.add("active");
-      const tab = document.getElementById(this.getAttribute("data-tab") + "Tab");
-      if (tab) tab.classList.add("active");
-    });
-  });
-}
-
-function setupProfileForms() {
-  const profileForm = document.getElementById("profileForm");
-  if (profileForm) profileForm.addEventListener("submit", handleProfileUpdate);
-
-  const accountForm = document.getElementById("accountForm");
-  if (accountForm) accountForm.addEventListener("submit", handlePasswordChange);
-}
-
-function handleProfileUpdate(e) {
-  e.preventDefault();
-  const firstName = document.getElementById("firstName").value;
-  const lastName  = document.getElementById("lastName").value;
-  const name      = `${firstName} ${lastName}`.trim();
-
-  const user = getSessionUser();
-  if (user) { user.name = name; localStorage.setItem(LS_USER_KEY, JSON.stringify(user)); }
-
-  // Also update the stored users array
-  const users = getUsers();
-  const idx   = users.findIndex(u => u.id === user?.id);
-  if (idx !== -1) { users[idx].name = name; saveUsers(users); }
-
-  showToast("Profile updated successfully!", "success");
-}
-
-function handlePasswordChange(e) {
-  e.preventDefault();
-  const current  = document.getElementById("currentPassword").value;
-  const next     = document.getElementById("newPassword").value;
-  const confirm  = document.getElementById("confirmNewPassword").value;
-
-  if (!current || !next || !confirm) { showToast("Please fill in all password fields.", "danger"); return; }
-  if (next.length < 8) { showToast("New password must be at least 8 characters.", "danger"); return; }
-  if (next !== confirm) { showToast("New passwords do not match.", "danger"); return; }
-
-  const user  = getSessionUser();
-  const users = getUsers();
-  const found = users.find(u => u.id === user?.id);
-  if (!found || found.password !== current) { showToast("Current password is incorrect.", "danger"); return; }
-
-  found.password = next;
-  saveUsers(users);
-  document.getElementById("accountForm").reset();
-  showToast("Password updated successfully!", "success");
-}
-
-function deleteAccount() {
-  if (!confirm("Are you absolutely sure you want to delete your account?\n\nThis cannot be undone.")) return;
-  if (prompt('Type "DELETE" to confirm:') !== "DELETE") { showToast("Account deletion cancelled.", "info"); return; }
-
-  const user  = getSessionUser();
-  const users = getUsers().filter(u => u.id !== user?.id);
-  saveUsers(users);
-  localStorage.clear();
-  alert("Your account has been deleted.");
-  window.location.href = "index.html";
-}
-
-function handleLogout(event) {
-  event.preventDefault();
-  if (confirm("Are you sure you want to logout?")) {
-    localStorage.clear();
-    window.location.href = "index.html";
-  }
-}
-
-// ==========================================
 // ACTION MENU — single shared dropdown
 // ==========================================
 
@@ -812,24 +515,13 @@ function showToast(message, type = "success") {
 // ==========================================
 
 document.addEventListener("DOMContentLoaded", function () {
-  enforcePageGuards();
-
-  const page = window.location.pathname.split("/").pop();
-
-  if (page === "login.html")    initLogin();
-  if (page === "register.html") initRegister();
-  if (page === "dashboard.html") initDashboard();
-  if (page === "profile.html")   initProfile();
+  initDashboard();
 });
 
 // Expose to inline onclick handlers
 window.handleToggleTask          = handleToggleTask;
 window.handleEditTaskOpen        = handleEditTaskOpen;
 window.handleDeleteTask          = handleDeleteTask;
-window.togglePassword            = togglePassword;
-window.googleLogin               = googleLogin;
-window.deleteAccount             = deleteAccount;
-window.handleLogout              = handleLogout;
 window.toggleActionMenu          = toggleActionMenu;
 window.closeActionMenu           = closeActionMenu;
 window.cyclePriority             = cyclePriority;
