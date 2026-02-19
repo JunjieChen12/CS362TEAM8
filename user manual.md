@@ -2,7 +2,7 @@ User Manual
 
   1. Introduction  
   Taskwise is an AI-powered personal task manager designed to reduce decision fatigue. 
-  It doesn't just list your tasks, it analyzes your history and constraints to tell you exctluy what to "Focus Now."
+  It doesn't just list your tasks, it analyzes your history and constraints to tell you exactly what to "Focus Now."
 
   *For Now: The current version has implemented the core front-end interface and supports full CRUD fucntionality for Tasks, including Create, Read, Update, and Delete operations.*
 
