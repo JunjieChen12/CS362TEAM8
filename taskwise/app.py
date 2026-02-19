@@ -22,15 +22,50 @@ class Task(db.Model):
     def __repr__(self):
         return f'<Task {self.id} - {self.name}>'
 
+# Algorithm  
+def calculate_priority(task):
+    score = 0
+    # Deadline Weight: Closer deadlines = higher score
+    if task.deadline:
+        try:
+            deadline_date = datetime.strptime(task.deadline, '%Y-%m-%d').date()
+            days_left = (deadline_date - date.today()).days
+            if days_left <= 0:
+                # Overdue or due today
+                score += 100  
+            else:
+                score += max(0, (50 / days_left))
+        except ValueError:
+            pass
+
+    # Duration Weight: Prioritize shorter tasks ("Quick Wins")
+    if task.duration:
+        score += max(0, (60 / task.duration))
+    
+    return score
+
 # ROUTES
 @app.route('/')
 def index():
-    active_tasks = Task.query.filter_by(is_completed=False).all()
+    raw_active = Task.query.filter_by(is_completed=False).all()
     completed_tasks = Task.query.filter_by(is_completed=True).all()
-    #display time
+    
+    # Sort the active tasks using the algorithm
+    active_tasks = sorted(raw_active, key=lambda t: calculate_priority(t), reverse=True)
+    
+    # Top Recommendation
+    if active_tasks:
+        focus_task = active_tasks[0]
+    else:
+        focus_task = None
+    
     today = datetime.now().strftime('%A, %b %d')
 
-    return render_template('index.html', active_tasks=active_tasks, completed_tasks=completed_tasks, current_date=today)
+    return render_template('index.html', 
+                           active_tasks=active_tasks, 
+                           completed_tasks=completed_tasks, 
+                           focus_task=focus_task, 
+                           current_date=today)
 
 # Add Task
 @app.route('/add', methods=['POST'])
@@ -90,6 +125,7 @@ def completed():
     # Only get tasks where is_completed is True
     completed_tasks = Task.query.filter_by(is_completed=True).all()
     return render_template('complete.html', tasks=completed_tasks)
+
 
 if __name__ == '__main__':
     # Automatically create the database file if it doesn't exist
