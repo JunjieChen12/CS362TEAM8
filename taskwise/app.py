@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime, date
 
 # Initialize App
 app = Flask(__name__, template_folder='html')
@@ -25,7 +26,10 @@ class Task(db.Model):
 @app.route('/')
 def index():
     tasks = Task.query.all()
-    return render_template('index.html', tasks=tasks)
+    #display time
+    today = datetime.now().strftime('%A, %b %d')
+
+    return render_template('index.html', tasks=tasks, current_date=today)
 
 # Add Task
 @app.route('/add', methods=['POST'])

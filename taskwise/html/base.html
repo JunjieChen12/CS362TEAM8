@@ -12,17 +12,26 @@
 <body>
 
   <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top border-bottom py-3">
-    <div class="container-fluid px-5">
-      <a class="navbar-brand logo fw-bold fs-3" href="/">TASKWISE</a>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav mx-auto">
-          <li class="nav-item"><a class="nav-link fw-bold" href="#">DASHBOARD</a></li>
+    <div class="container-fluid px-5 position-relative d-flex align-items-center">
+      
+      <a class="navbar-brand logo fw-bold fs-3 m-0" href="/">TASKWISE</a>
+      
+      <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+        <ul class="navbar-nav position-absolute start-50 translate-middle-x">
+          <li class="nav-item">
+            <a class="nav-link fw-bold" href="#" style="color: #5a6a7a; letter-spacing: 1px;">DASHBOARD</a>
+          </li>
         </ul>
-        <div class="d-flex align-items-center gap-3">
-          <i class="bi bi-bell-fill fs-5"></i>
-          <div class="rounded-circle bg-primary opacity-50" style="width:35px;height:35px;"></div>
-        </div>
       </div>
+
+      <div class="d-flex align-items-center gap-3 ms-auto">
+        <i class="bi bi-bell-fill fs-5"></i>
+        <div class="rounded-circle bg-primary opacity-50" style="width:35px;height:35px;"></div>
+      </div>
+
+      <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
     </div>
   </nav>
 

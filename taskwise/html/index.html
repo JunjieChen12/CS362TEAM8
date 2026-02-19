@@ -5,11 +5,12 @@
     <div class="col-12 px-4">
         
         <div class="dashboard-header mb-4">
-          <h1 class="greeting h3 mb-2"><strong>Dashboard</strong></h1>
+          <h1 class="greeting h3 mb-2"><strong>{{ current_date }}</strong></h1>
         </div>
 
         <div class="card focus-banner mb-5 border-0 shadow-sm" style="background: linear-gradient(135deg, #859ab8, #b7a7c6); color: white; border-radius: 20px;">
-          <div class="card-body p-4"> <div class="small fw-bold mb-2">✦ AI RECOMMENDED</div>
+          <div class="card-body p-4"> 
+            <div class="small fw-bold mb-2">✦ AI RECOMMENDED</div>
             <h2 class="h4 mb-3">--</h2>
             <button class="btn btn-light rounded-pill px-4 fw-bold">Start Focus Session</button>
           </div>
@@ -35,9 +36,9 @@
                     <i class="bi bi-three-dots text-muted"></i>
                 </button>
             </div>
-        </div>
+          </div>
 
-        <div class="modal fade" id="editModal{{ task.id }}" tabindex="-1" aria-hidden="true">
+          <div class="modal fade" id="editModal{{ task.id }}" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content border-0 rounded-4 shadow">
                     <form action="/edit/{{ task.id }}" method="POST" id="editForm{{ task.id }}">
@@ -72,14 +73,16 @@
                     </div>
                 </div>
             </div>
+          </div>
+          {% endfor %}
         </div>
-        {% endfor %}
+
+        {% if not tasks %}
+        <div class="text-center py-5">
+            <i class="bi bi-check-circle fs-1 text-muted"></i>
+            <p class="mt-2 text-muted">All caught up!</p>
+        </div>
+        {% endif %}
     </div>
-    {% if not tasks %}
-    <div class="text-center py-5">
-        <i class="bi bi-check-circle fs-1 text-muted"></i>
-        <p class="mt-2 text-muted">All caught up!</p>
-    </div>
-    {% endif %}
 </div>
 {% endblock %}
