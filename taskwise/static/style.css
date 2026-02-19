@@ -14,7 +14,8 @@ body {
 }
 
 .navbar {
-    background-color: var(--bg-gray) 
+    background-color: var(--bg-gray)
+    
 }
 
 .card {
