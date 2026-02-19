@@ -25,11 +25,12 @@ class Task(db.Model):
 # ROUTES
 @app.route('/')
 def index():
-    tasks = Task.query.all()
+    active_tasks = Task.query.filter_by(is_completed=False).all()
+    completed_tasks = Task.query.filter_by(is_completed=True).all()
     #display time
     today = datetime.now().strftime('%A, %b %d')
 
-    return render_template('index.html', tasks=tasks, current_date=today)
+    return render_template('index.html', active_tasks=active_tasks, completed_tasks=completed_tasks, current_date=today)
 
 # Add Task
 @app.route('/add', methods=['POST'])
@@ -82,6 +83,13 @@ def delete_task(task_id):
         return redirect('/')
     except:
         return 'There was an issue deleting your task'
+
+# Complete Task
+@app.route('/complete')
+def completed():
+    # Only get tasks where is_completed is True
+    completed_tasks = Task.query.filter_by(is_completed=True).all()
+    return render_template('complete.html', tasks=completed_tasks)
 
 if __name__ == '__main__':
     # Automatically create the database file if it doesn't exist
