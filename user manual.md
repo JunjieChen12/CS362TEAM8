@@ -15,20 +15,22 @@ User Manual
   - pip install -r requirements.txt
 
   3. How to Run
-     python app.py
+     - pip install -r requirements.txt
+     - python -m venv venv
+     - python app.py
      
-  4. How to Use
+  5. How to Use
     1. Create new task
      - click the "New Task" button
      - Enter task name, set the estimated duration, and pick a deadline.
-     - Click "Done" to save. The task will appear in your pending list in the home page.
-    2. Edite your task
-     - Find teh task you want to change in the list.
-     - Click the "Edit"
+     - Click "Create Task" to save. The task will appear in the home page.
+    2. Edit your task
+     - Find the task you want to change in the list.
+     - Click the "three dots"
      - Change the deadline or duration as needed.
-     - Click "Update" to save your change.
+     - Click "Save Changes" to save your change.
      
   6. Bug Reports & Known Issues 
-    How to report: Please go to the "Issues" tab on GitHub. Provide screenshots and steps to reproduce.
+    How to report: Go to the "Issues" tab on GitHub. Provide screenshots and steps to reproduce.
     Known Issues: None
     
