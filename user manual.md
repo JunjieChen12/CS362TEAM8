@@ -4,11 +4,11 @@ User Manual
   Taskwise is an AI-powered personal task manager designed to reduce decision fatigue. 
   It doesn't just list your tasks, it analyzes your history and constraints to tell you exactly what to "Focus Now."
 
-  *For Now: The current version has implemented the core front-end interface and supports full CRUD fucntionality for Tasks, including Create, Read, Update, and Delete operations.*
+  *For Now: The current version has implemented the core frontend interface and supports full CRUD fucntionality for Tasks, including Create, Read, Update, and Delete operations.*
 
 
   2. Installation & Setup   
-  Prerequisites: Python 3.9+, Flask, adn a modern web browser.
+  Prerequisites: Python 3.9+, Flask, and a modern web browser.
   Installation:
   - Clone the repository from GitHub
   - Create venv: python -m venv venv
