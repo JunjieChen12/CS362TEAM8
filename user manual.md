@@ -4,7 +4,7 @@ User Manual
   Taskwise is an AI-powered personal task manager designed to reduce decision fatigue. 
   It doesn't just list your tasks, it analyzes your history and constraints to tell you exctluy what to "Focus Now."
 
-  **For Now: The current version has implemented the core front-end interface and supports full CRUD fucntionality for Tasks, including Create, Read, Update, and Delte operations. 
+  *For Now: The current version has implemented the core front-end interface and supports full CRUD fucntionality for Tasks, including Create, Read, Update, and Delete operations.*
 
 
   2. Installation & Setup   
@@ -15,16 +15,13 @@ User Manual
   - pip install -r requirements.txt
 
   3. How to Run
-     - pip install -r requirements.txt
-     - python -m venv venv
      - python app.py
      
-  5. How to Use
-    1. Create new task
+  4. How to create a task 
      - click the "New Task" button
      - Enter task name, set the estimated duration, and pick a deadline.
      - Click "Create Task" to save. The task will appear in the home page.
-    2. Edit your task
+  5. How to edit task
      - Find the task you want to change in the list.
      - Click the "three dots"
      - Change the deadline or duration as needed.
