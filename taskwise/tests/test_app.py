@@ -81,5 +81,22 @@ class TaskwiseTestCase(unittest.TestCase):
             self.assertEqual(updated_task.name, "New Name")
             self.assertEqual(updated_task.duration, 45)
 
+    def test_completed_route_filters_correctly(self):
+        """Use-Case Test: Verify the /complete page ONLY shows finished tasks"""
+        with app.app_context():
+            # Create one of each type of task
+            active_task = Task(name="Active Task", is_completed=False)
+            finished_task = Task(name="Done Task", is_completed=True)
+            db.session.add_all([active_task, finished_task])
+            db.session.commit()
+
+        # Load the completed page
+        response = self.app.get('/complete')
+        self.assertEqual(response.status_code, 200)
+        
+        # The HTML byte data should contain "Done Task" not "Active Task"
+        self.assertIn(b'Done Task', response.data)
+        self.assertNotIn(b'Active Task', response.data)
+
 if __name__ == '__main__':
     unittest.main()
