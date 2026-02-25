@@ -57,5 +57,29 @@ class TaskwiseTestCase(unittest.TestCase):
             updated_task = db.session.get(Task, task_id)
             self.assertTrue(updated_task.is_completed)
 
+    def test_edit_task(self):
+        """Integration Test: Verify editing a task updates the database correctly"""
+        # 1. Create a dummy task
+        with app.app_context():
+            task = Task(name="Old Name", duration=10)
+            db.session.add(task)
+            db.session.commit()
+            task_id = task.id
+
+        # 2. Simulate editing task
+        response = self.app.post(f'/edit/{task_id}', data=dict(
+            name="New Name",
+            deadline="2026-10-31",
+            duration=45
+        ), follow_redirects=True)
+
+        self.assertEqual(response.status_code, 200)
+        
+        # 3. Verify the database actually saved the new values
+        with app.app_context():
+            updated_task = db.session.get(Task, task_id)
+            self.assertEqual(updated_task.name, "New Name")
+            self.assertEqual(updated_task.duration, 45)
+
 if __name__ == '__main__':
     unittest.main()
