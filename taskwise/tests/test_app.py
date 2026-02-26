@@ -80,6 +80,26 @@ class TaskwiseTestCase(unittest.TestCase):
             updated_task = db.session.get(Task, task_id)
             self.assertEqual(updated_task.name, "New Name")
             self.assertEqual(updated_task.duration, 45)
+            
+    
+    def test_delete_task(self):
+        """Unit Test: Verify deleting a task completely removes it from the DB"""
+        with app.app_context():
+            task = Task(name="Task to delete", duration=15)
+            db.session.add(task)
+            db.session.commit()
+            task_id = task.id
+
+        # Simulate the delete button
+        response = self.app.post(f'/delete/{task_id}', follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+
+        # Query the DB to make sure its empty
+        with app.app_context():
+            deleted_task = db.session.get(Task, task_id)
+            self.assertIsNone(deleted_task)
+
+    
 
     def test_completed_route_filters_correctly(self):
         """Use-Case Test: Verify the /complete page ONLY shows finished tasks"""
