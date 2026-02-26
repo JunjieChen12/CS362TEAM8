@@ -80,6 +80,8 @@ If we complete the MVP ahead of schedule, we plan to implement:
 
 
 
+
+  
 1. Test-Automation Infrastructure
 	•	Infrastructure Chosen: Python unittest framework.
 	•	Justification: We chose unittest because it is built natively into the Python standard library, meaning it requires no additional external installations. It integrates seamlessly with our Flask application context and uses an xUnit-style architecture (setUp and tearDown methods) that makes it easy to isolate our SQLite database tests.
