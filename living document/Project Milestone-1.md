@@ -77,3 +77,43 @@ If we complete the MVP ahead of schedule, we plan to implement:
 
 1.  **Calendar Integration:** Syncing with Google Calendar to automatically identify "Free Time" blocks rather than asking the user to input available time.
 2.  **Mood/Energy Based Recommendations:** Adding a prompt asking "How are you feeling?" (High Energy vs. Low Energy) to recommend heavy tasks vs. light administrative tasks.
+
+
+
+1. Test-Automation Infrastructure
+	•	Infrastructure Chosen: Python unittest framework.
+	•	Justification: We chose unittest because it is built natively into the Python standard library, meaning it requires no additional external installations. It integrates seamlessly with our Flask application context and uses an xUnit-style architecture (setUp and tearDown methods) that makes it easy to isolate our SQLite database tests.
+	•	How to add a new test: 1. Navigate to the tests/ directory in our repository. 2. Open the test file (test_app.py). 3. Create a class that inherits from unittest.TestCase. 4. Define a new method starting with the word test_ (e.g., def test_delete_task(self):). 5. Run the suite locally using the command: python -m unittest discover tests.
+2. Continuous Integration (CI) Service
+	•	Service Chosen: GitHub Actions.
+	◦	GitHub Actions is deeply integrated directly into our code hosting platform. This eliminates the need for external webhooks or third-party accounts. It allows us to block pull requests automatically if tests fail, ensuring that our main branch remains stable as all four team members contribute code.
+	
+3. CI Service Comparison
+GitHub Actions (Our Choice)
+	•	Setup Difficulty: Low. It requires only a single YAML configuration file stored directly within our repository.
+	•	Platform Integration: Native. It is built directly into the GitHub Pull Request UI, meaning we don't have to leave our codebase to see test results.
+	•	Cost: Free. It has a generous free tier for public and student repositories.
+	•	Pros: Zero context-switching; native PR blocking; easy setup for Python environment testing.
+	•	Cons: YAML syntax errors can be frustrating and difficult to debug.
+
+Jenkins
+	•	Setup Difficulty: High. It requires hosting, configuring, and maintaining a dedicated external server.
+	•	Platform Integration: Plugin-based. It requires extensive plugin management and webhooks to talk to GitHub.
+	•	Cost: Free software, but we would have to pay out-of-pocket for the server hosting.
+	•	Pros: Infinite customizability; it is the industry standard for massive enterprise applications.
+	•	Cons: Far too heavy, complex, and maintenance-intensive for a 9-week student project.
+Travis CI
+	•	Setup Difficulty: Medium. Requires linking a third-party account and setting up external webhooks.
+	•	Platform Integration: External. Test results and logs are hosted on a completely separate Travis CI dashboard.
+	•	Cost: Limited. The free tier has become highly restrictive for new open-source projects.
+	•	Pros: Historically the standard for open-source; simple configuration syntax.
+	•	Cons: Uncertainty around free-tier minute limits and the hassle of managing another external account.
+4. CI Build Configuration
+	•	Triggers: The automated build runs on two specific development actions:
+	◦	Any Push directly to the main branch.
+	◦	Any Pull Request opened against the main branch.
+	•	Tests Executed: Every time a build is triggered, the CI pipeline boots up an Ubuntu server, installs Python/Flask, and runs our full unittest suite. This currently executes tests verifying:
+	◦	The successful load of the Dashboard UI (HTTP 200).
+	◦	Task Creation (POST /add) and database persistence.
+	◦	Task Completion (GET /toggle/<id>) logic and state changes.
+
