@@ -17,6 +17,7 @@ class Task(db.Model):
     name = db.Column(db.String(200), nullable=False)
     duration = db.Column(db.Integer, nullable=True)
     deadline = db.Column(db.String(50), nullable=True)
+    notes = db.Column(db.Text, nullable=True)
     is_completed = db.Column(db.Boolean, default=False)
 
     def __repr__(self):
@@ -73,6 +74,7 @@ def add_task():
     task_name = request.form.get('name')
     task_deadline = request.form.get('deadline')
     task_duration = request.form.get('duration')
+    task_notes = request.form.get('notes')
     
     # duration validation
     if task_deadline:
@@ -85,7 +87,7 @@ def add_task():
     if task_name and len(task_name) > 100:
         return "Error: Task name must be 100 characters or less.", 400
 
-    new_task = Task(name=task_name, deadline=task_deadline, duration=task_duration)
+    new_task = Task(name=task_name, deadline=task_deadline, duration=task_duration, notes=task_notes)
 
     try:
         db.session.add(new_task)
@@ -112,6 +114,7 @@ def edit_task(task_id):
     task.name = request.form.get('name')
     task.deadline = request.form.get('deadline')
     task.duration = request.form.get('duration')
+    task.notes = request.form.get('notes')
 
     task.name = request.form.get('name')
     if task.name and len(task.name) > 100:
