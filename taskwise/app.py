@@ -74,10 +74,16 @@ def add_task():
     task_deadline = request.form.get('deadline')
     task_duration = request.form.get('duration')
     
+    # duration validation
     if task_deadline:
         selected_date = datetime.strptime(task_deadline, '%Y-%m-%d').date()
         if selected_date < date.today():
             return "Error: You cannot set a deadline in the past.", 400
+
+    # task name input validation   
+    task_name = request.form.get('name')
+    if task_name and len(task_name) > 100:
+        return "Error: Task name must be 100 characters or less.", 400
 
     new_task = Task(name=task_name, deadline=task_deadline, duration=task_duration)
 
@@ -106,6 +112,10 @@ def edit_task(task_id):
     task.name = request.form.get('name')
     task.deadline = request.form.get('deadline')
     task.duration = request.form.get('duration')
+
+    task.name = request.form.get('name')
+    if task.name and len(task.name) > 100:
+        return "Error: Task name must be 100 characters or less.", 400
 
     try:
         db.session.commit()
