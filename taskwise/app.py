@@ -73,6 +73,11 @@ def add_task():
     task_name = request.form.get('name')
     task_deadline = request.form.get('deadline')
     task_duration = request.form.get('duration')
+    
+    if task_deadline:
+        selected_date = datetime.strptime(task_deadline, '%Y-%m-%d').date()
+        if selected_date < date.today():
+            return "Error: You cannot set a deadline in the past.", 400
 
     new_task = Task(name=task_name, deadline=task_deadline, duration=task_duration)
 
