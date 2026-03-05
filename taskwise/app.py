@@ -19,6 +19,8 @@ class Task(db.Model):
     deadline = db.Column(db.String(50), nullable=True)
     notes = db.Column(db.Text, nullable=True)
     is_completed = db.Column(db.Boolean, default=False)
+    #algorithm calculation
+    created = db.Column(db.DateTime, default=datetime.utcnow)
 
     def __repr__(self):
         return f'<Task {self.id} - {self.name}>'
@@ -26,24 +28,53 @@ class Task(db.Model):
 # Algorithm  
 def calculate_priority(task):
     score = 0
-    # Deadline Weight: Closer deadlines = higher score
+    today = date.today()
+
+    #FACTOR 1: Urgency
     if task.deadline:
         try:
             deadline_date = datetime.strptime(task.deadline, '%Y-%m-%d').date()
-            days_left = (deadline_date - date.today()).days
-            if days_left <= 0:
-                # Overdue or due today
-                score += 100  
+            days_left = (deadline_date - today).days
+            
+            if days_left < 0:
+                #Overdue: higher weight
+                score += 200 + abs(days_left) * 10
+            elif days_left == 0:
+                # Due Today: High baseline
+                score += 150
+            elif days_left <= 3:
+                # 1-3 days 
+                score += (100 / (days_left + 1))
             else:
-                score += max(0, (50 / days_left))
+                # Distant: Lower linear weight
+                score += max(0, 40 - days_left)
         except ValueError:
             pass
 
-    # Duration Weight: Prioritize shorter tasks ("Quick Wins")
+    #FACTOR 2: Effort / Duration
     if task.duration:
-        score += max(0, (60 / task.duration))
-    
+        duration = int(task.duration)
+        if duration <= 30:
+            # Under 30 mins
+            score += 40
+        elif duration <= 90:
+            # Deep Work 
+            score += 20
+        else:
+            # Very long tasks 
+            score += 5
+
+    # FACTOR 3: Task Age
+    if task.created:
+        created_date = task.created.date()
+        # Calculate how many days old the task is 
+        age_delta = today - created_date
+        days_old = age_delta.days 
+        # 2 points for every day the task has existed 
+        # Low priority tasks eventually move up 
+        score += (days_old * 2) 
     return score
+
 
 # ROUTES
 @app.route('/')
