@@ -168,6 +168,16 @@ def delete_task(task_id):
     except:
         return 'There was an issue deleting your task'
 
+# 404 Page (accessible at /404)
+@app.route('/404')
+def page_404():
+    return render_template('404.html'), 404
+
+# 404 Error Handler
+@app.errorhandler(404)
+def not_found(e):
+    return render_template('404.html'), 404
+
 # Complete Task
 @app.route('/complete')
 def completed():
