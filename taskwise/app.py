@@ -151,6 +151,16 @@ def page_404():
 def not_found(e):
     return render_template('404.html'), 404
 
+# Focus session
+@app.route('/focus/<int:task_id>')
+def focus_session(task_id):
+    task = Task.query.get_or_404(task_id)
+    # Default to 25 minutes if no duration is set
+    duration = task.duration
+    if not duration:
+        duration = 25
+    return render_template('focus.html', task=task, duration=duration)
+
 # Complete Task
 @app.route('/complete')
 def completed():

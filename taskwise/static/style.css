@@ -46,3 +46,52 @@ body {
     box-shadow: 4px 4px 8px rgb(163,177,198,0.6), 
                -4px -4px 8px rgba(255,255,255, 0.5);
 }
+
+
+/* Primary Focus Button (Slate Blue) */
+.btn-focus-primary {
+    background-color: #859ab8;
+    color: white;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.btn-focus-primary:hover {
+    background-color: #7488a5;
+    color: white;
+    transform: translateY(-1px);
+}
+
+/* Outline Button (Muted Slate) */
+.btn-outline-focus {
+    color: #859ab8;
+    border: 2px solid #859ab8;
+    background: transparent;
+}
+
+.btn-outline-focus:hover {
+    background-color: #859ab8;
+    color: white;
+}
+
+/* Success Button (Soft Purple/Lavender) */
+.btn-focus-success {
+    background-color: #b7a7c6;
+    color: white;
+    border: none;
+}
+
+.btn-focus-success:hover {
+    background-color: #a493b5;
+    color: white;
+}
+
+/* Smooth fade-in for the post-session controls */
+.animate-in {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
