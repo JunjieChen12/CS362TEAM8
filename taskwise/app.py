@@ -11,6 +11,13 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
+
+@app.context_processor
+def inject_min_datetime():
+    """Make min_datetime available in all templates (for deadline inputs)."""
+    return {'min_datetime': datetime.now().strftime('%Y-%m-%dT%H:%M')}
+
+
 # DATABASE MODEL 
 class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -40,22 +47,27 @@ def index():
         focus_task = active_tasks[0]
         focus_deadline_formatted = None
         if focus_task.deadline:
-            d = datetime.strptime(focus_task.deadline, '%Y-%m-%d')
-            focus_deadline_formatted = d.strftime('%b %d, %Y')
+            try:
+                d = datetime.strptime(focus_task.deadline, '%Y-%m-%dT%H:%M')
+            except ValueError:
+                try:
+                    d = datetime.strptime(focus_task.deadline, '%Y-%m-%d')
+                except ValueError:
+                    d = None
+            if d:
+                focus_deadline_formatted = d.strftime('%b %d, %Y')
     else:
         focus_task = None
         focus_deadline_formatted = None
     
     today = datetime.now().strftime('%A, %b %d')
-    min_datetime = datetime.now().strftime('%Y-%m-%dT%H:%M')
 
     return render_template('index.html', 
                            active_tasks=active_tasks, 
                            completed_tasks=completed_tasks, 
                            focus_task=focus_task, 
                            focus_deadline_formatted=focus_deadline_formatted,
-                           current_date=today,
-                           min_datetime=min_datetime)
+                           current_date=today)
 
 # Add Task
 @app.route('/add', methods=['POST'])

@@ -99,8 +99,6 @@ class TaskwiseTestCase(unittest.TestCase):
             deleted_task = db.session.get(Task, task_id)
             self.assertIsNone(deleted_task)
 
-    
-
     def test_completed_route_filters_correctly(self):
         """Use-Case Test: Verify the /complete page ONLY shows finished tasks"""
         with app.app_context():
