@@ -42,20 +42,22 @@ def index():
     # Sort the active tasks using the algorithm
     active_tasks = sorted(raw_active, key=lambda t: calculate_priority(t), reverse=True)
     
-    # Top Recommendation
     if active_tasks:
         focus_task = active_tasks[0]
         focus_deadline_formatted = None
         if focus_task.deadline:
-            try:
-                d = datetime.strptime(focus_task.deadline, '%Y-%m-%dT%H:%M')
-            except ValueError:
+            d = None
+            for fmt in ('%Y-%m-%dT%H:%M:%S', '%Y-%m-%dT%H:%M', '%Y-%m-%d'):
                 try:
-                    d = datetime.strptime(focus_task.deadline, '%Y-%m-%d')
+                    d = datetime.strptime(focus_task.deadline, fmt)
+                    break
                 except ValueError:
-                    d = None
+                    continue
             if d:
-                focus_deadline_formatted = d.strftime('%b %d, %Y')
+                if 'T' in focus_task.deadline:
+                    focus_deadline_formatted = d.strftime('%b %d, %Y, %I:%M %p')
+                else:
+                    focus_deadline_formatted = d.strftime('%b %d, %Y, 11:59 PM')
     else:
         focus_task = None
         focus_deadline_formatted = None
