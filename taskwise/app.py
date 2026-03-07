@@ -65,11 +65,11 @@ def index():
     today = datetime.now().strftime('%A, %b %d')
 
     return render_template('index.html', 
-                           active_tasks=active_tasks, 
-                           completed_tasks=completed_tasks, 
-                           focus_task=focus_task, 
-                           focus_deadline_formatted=focus_deadline_formatted,
-                           current_date=today)
+                           active_tasks = active_tasks, 
+                           completed_tasks = completed_tasks, 
+                           focus_task = focus_task, 
+                           focus_deadline_formatted = focus_deadline_formatted,
+                           current_date = today)
 
 # Add Task
 @app.route('/add', methods=['POST'])
