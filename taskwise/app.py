@@ -38,18 +38,24 @@ def index():
     # Top Recommendation
     if active_tasks:
         focus_task = active_tasks[0]
+        focus_deadline_formatted = None
+        if focus_task.deadline:
+            d = datetime.strptime(focus_task.deadline, '%Y-%m-%d')
+            focus_deadline_formatted = d.strftime('%b %d, %Y')
     else:
         focus_task = None
+        focus_deadline_formatted = None
     
     today = datetime.now().strftime('%A, %b %d')
     min_datetime = datetime.now().strftime('%Y-%m-%dT%H:%M')
 
     return render_template('index.html', 
-                           active_tasks = active_tasks, 
-                           completed_tasks = completed_tasks, 
-                           focus_task = focus_task, 
-                           current_date = today,
-                           min_datetime = min_datetime)
+                           active_tasks=active_tasks, 
+                           completed_tasks=completed_tasks, 
+                           focus_task=focus_task, 
+                           focus_deadline_formatted=focus_deadline_formatted,
+                           current_date=today,
+                           min_datetime=min_datetime)
 
 # Add Task
 @app.route('/add', methods=['POST'])
