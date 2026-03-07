@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, date
-
+from recommendations import calculate_priority
 # Initialize App
 app = Flask(__name__, template_folder='html')
 
@@ -24,56 +24,6 @@ class Task(db.Model):
 
     def __repr__(self):
         return f'<Task {self.id} - {self.name}>'
-
-# Algorithm  
-def calculate_priority(task):
-    score = 0
-    today = date.today()
-
-    #FACTOR 1: Urgency
-    if task.deadline:
-        try:
-            deadline_date = datetime.strptime(task.deadline, '%Y-%m-%d').date()
-            days_left = (deadline_date - today).days
-            
-            if days_left < 0:
-                #Overdue: higher weight
-                score += 200 + abs(days_left) * 10
-            elif days_left == 0:
-                # Due Today: High baseline
-                score += 150
-            elif days_left <= 3:
-                # 1-3 days 
-                score += (100 / (days_left + 1))
-            else:
-                # Distant: Lower linear weight
-                score += max(0, 40 - days_left)
-        except ValueError:
-            pass
-
-    #FACTOR 2: Effort / Duration
-    if task.duration:
-        duration = int(task.duration)
-        if duration <= 30:
-            # Under 30 mins
-            score += 40
-        elif duration <= 90:
-            # Deep Work 
-            score += 20
-        else:
-            # Very long tasks 
-            score += 5
-
-    # FACTOR 3: Task Age
-    if task.created:
-        created_date = task.created.date()
-        # Calculate how many days old the task is 
-        age_delta = today - created_date
-        days_old = age_delta.days 
-        # 2 points for every day the task has existed 
-        # Low priority tasks eventually move up 
-        score += (days_old * 2) 
-    return score
 
 
 # ROUTES
@@ -109,9 +59,15 @@ def add_task():
     
     # duration validation
     if task_deadline:
-        selected_date = datetime.strptime(task_deadline, '%Y-%m-%d').date()
-        if selected_date < date.today():
-            return "Error: You cannot set a deadline in the past.", 400
+        try:
+            selected_date = datetime.strptime(task_deadline, '%Y-%m-%dT%H:%M').date()
+            if selected_date < date.today():
+                return "Error: You cannot set a deadline in the past.", 400
+        except ValueError:
+            selected_date = datetime.strptime(task_deadline,'%Y-%m-%d').date()
+            if selected_date < date.today():
+                return "Error: You cannot set a deadline in the past.", 400
+
 
     # task name input validation   
     task_name = request.form.get('name')
@@ -142,14 +98,31 @@ def toggle_task(task_id):
 @app.route('/edit/<int:task_id>', methods=['POST'])
 def edit_task(task_id):
     task = Task.query.get_or_404(task_id)
-    task.name = request.form.get('name')
-    task.deadline = request.form.get('deadline')
-    task.duration = request.form.get('duration')
-    task.notes = request.form.get('notes')
 
-    task.name = request.form.get('name')
-    if task.name and len(task.name) > 100:
+    new_name = request.form.get('name')
+    new_deadline = request.form.get('deadline')
+    new_duration = request.form.get('duration')
+    new_notes = request.form.get('notes')
+
+    if new_name and len(new_name) > 100:
         return "Error: Task name must be 100 characters or less.", 400
+    
+    # Date time validation
+    if new_deadline:
+        try:
+            selected_date = datetime.strptime(new_deadline, '%Y-%m-%dT%H:%M').date()
+            if selected_date < date.today():
+                return "Error: You cannot set a deadline in the past.", 400
+        except ValueError:
+            selected_date = datetime.strptime(new_deadline,'%Y-%m-%d').date()
+            if selected_date < date.today():
+                return "Error: You cannot set a deadline in the past.", 400
+            
+    # If all validations pass, update the database object
+    task.name = new_name
+    task.deadline = new_deadline
+    task.duration = new_duration
+    task.notes = new_notes
 
     try:
         db.session.commit()
