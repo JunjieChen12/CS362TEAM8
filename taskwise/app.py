@@ -42,12 +42,14 @@ def index():
         focus_task = None
     
     today = datetime.now().strftime('%A, %b %d')
+    min_datetime = datetime.now().strftime('%Y-%m-%dT%H:%M')
 
     return render_template('index.html', 
-                           active_tasks=active_tasks, 
-                           completed_tasks=completed_tasks, 
-                           focus_task=focus_task, 
-                           current_date=today)
+                           active_tasks = active_tasks, 
+                           completed_tasks = completed_tasks, 
+                           focus_task = focus_task, 
+                           current_date = today,
+                           min_datetime = min_datetime)
 
 # Add Task
 @app.route('/add', methods=['POST'])
