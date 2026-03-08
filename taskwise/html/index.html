@@ -105,11 +105,11 @@
                     </form>
                     <div class="modal-footer border-0 d-flex justify-content-between">
                         <form action="/delete/{{ task.id }}" method="POST">
-                            <button type="submit" class="btn btn-outline-danger px-3" onclick="return confirm('Delete this task?')">
+                            <button type="submit" class="btn btn-soft-delete px-3 rounded-pill" onclick="return confirm('Delete this task?')">
                                 <i class="bi bi-trash me-1"></i> Delete
                             </button>
                         </form>
-                        <button type="submit" form="editForm{{ task.id }}" class="btn btn-primary px-4">Save Changes</button>
+                        <button type="submit" form="editForm{{ task.id }}" class="btn btn-focus-primary px-4 rounded-pill fw-bold">Save Changes</button>
                     </div>
                 </div>
             </div>

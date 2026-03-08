@@ -48,7 +48,7 @@ body {
 }
 
 
-/* Primary Focus Button (Slate Blue) */
+/* Primary Focus Button */
 .btn-focus-primary {
     background-color: #859ab8;
     color: white;
@@ -62,7 +62,7 @@ body {
     transform: translateY(-1px);
 }
 
-/* Outline Button (Muted Slate) */
+/* Outline Button */
 .btn-outline-focus {
     color: #859ab8;
     border: 2px solid #859ab8;
@@ -98,6 +98,21 @@ body {
 
 .collapse {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Delete button */
+.btn-soft-delete {
+    color: #d9534f;
+    border: 1px solid #f2dede;
+    background-color: transparent;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.btn-soft-delete:hover {
+    background-color: #f2dede;
+    color: #c9302c;
+    border-color: #ebccd1;
 }
 
 @keyframes fadeIn {
