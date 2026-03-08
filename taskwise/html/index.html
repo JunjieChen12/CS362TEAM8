@@ -38,49 +38,39 @@
           
           {% for task in active_tasks %}
           <div class="card mb-3 border-0 shadow-sm rounded-3">
-            <div class="card-body d-flex justify-content-between align-items-center px-4 py-3">
-                <div class="d-flex align-items-center gap-4">
-                    <a href="/toggle/{{ task.id }}" class="text-decoration-none">
-                        <i class="bi bi-square fs-4 text-muted"></i>
-                    </a>
-                    <div class="d-flex flex-column">
-                        <span class="fw-normal text-dark">{{ task.name }}</span>
-                        {% if task.notes %}
-                            {% if task.notes|length > 20 %}
-                                <small class="text-secondary">
-                                    {{ task.notes[:20] }}...
-                                    <a href="#" class="text-decoration-none fw-bold" data-bs-toggle="modal" data-bs-target="#noteModal{{ task.id }}">
-                                        View All
-                                    </a>
-                                </small>
-
-                                <div class="modal fade" id="noteModal{{ task.id }}" tabindex="-1" aria-hidden="true">
-                                    <div class="modal-dialog modal-dialog-centered">
-                                        <div class="modal-content border-0 rounded-4 shadow">
-                                            <div class="modal-header border-0 pb-0">
-                                                <h5 class="fw-bold">Notes</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                                            </div>
-
-                                            <div class="modal-body py-4">
-                                                <p class="text-secondary mb-0">{{ task.notes }}</p>
-                                            </div>
-
-                                            <div class="modal-footer border-0">
-                                                <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Close</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            {% else %}
-                                <small class="text-secondary">{{ task.notes }}</small>
+            <div class="card-body px-4 py-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center gap-4">
+                        <a href="/toggle/{{ task.id }}" class="text-decoration-none">
+                            <i class="bi bi-square fs-4 text-muted"></i>
+                        </a>
+                        <div class="d-flex flex-column">
+                            <span class="fw-normal text-dark">{{ task.name }}</span>
+                            
+                            {% if task.notes %}
+                            <div class="d-flex align-items-center gap-1 mt-1 note-trigger" 
+                                 data-bs-toggle="collapse" 
+                                 data-bs-target="#collapseNote{{ task.id }}" 
+                                 style="cursor: pointer; user-select: none;">
+                                <i class="bi bi-chevron-right text-secondary small-arrow" style="font-size: 0.75rem; transition: transform 0.3s ease;"></i>
+                                <small class="text-secondary opacity-75">Notes</small>
+                            </div>
                             {% endif %}
-                        {% endif %}
+                        </div>
+                    </div>
+                    
+                    <button class="btn p-0 border-0" data-bs-toggle="modal" data-bs-target="#editModal{{ task.id }}">
+                        <i class="bi bi-three-dots text-muted"></i>
+                    </button>
+                </div>
+
+                {% if task.notes %}
+                <div class="collapse" id="collapseNote{{ task.id }}">
+                    <div class="pt-3 mt-2 border-top text-secondary" style="font-size: 0.9rem; line-height: 1.5;">
+                        {{ task.notes }}
                     </div>
                 </div>
-                <button class="btn p-0 border-0" data-bs-toggle="modal" data-bs-target="#editModal{{ task.id }}">
-                    <i class="bi bi-three-dots text-muted"></i>
-                </button>
+                {% endif %}
             </div>
           </div>
 
@@ -99,7 +89,7 @@
                             </div>
                             <div class="mb-3">
                                 <label class="form-label small fw-bold">Notes</label>
-                                <textarea class="form-control" name="notes" rows="2">{{ task.notes }}</textarea>
+                                <textarea class="form-control" name="notes" rows="3">{{ task.notes }}</textarea>
                             </div>
                             <div class="row g-3">
                                 <div class="col-6">
