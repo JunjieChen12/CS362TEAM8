@@ -262,7 +262,7 @@ This section revises our original use cases and requirements based on feedback r
 ## External Requirements
 
 - The system shall be robust against **invalid user input** and **database failures**.
-- The application shall be deployed as a **web-based service with a public URL**.
+- The application shall be deployed as a **web-based service with a local URL**.
 - The system shall be **buildable from source** with clear documentation.
 - The project scope must remain achievable within the **team’s resources and course timeline**.
 
