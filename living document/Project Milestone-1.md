@@ -1,10 +1,10 @@
 # Taskwise - Personal Task Manager with AI recommendations
 
 **Team Members:**
-* **Junjie Chen** - [Fullstack]
-* **Meiqi Ma** - [Backend]
-* **Thao Nguyen** - [Frontend]
-* **Weiqian Xu** - [Backend]
+* **Junjie Chen** - [Fullstack Developer]
+* **Meiqi Ma** - [Backend/AI Logic]
+* **Thao Nguyen** - [Frontend Developer]
+* **Weiqian Xu** - [Backend/Database]
 
 ---
 
